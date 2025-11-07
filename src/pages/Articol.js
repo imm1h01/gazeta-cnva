@@ -11,8 +11,6 @@ export default function Articol() {
 
   useEffect(() => {
     const articoleRef = ref(db, "articole");
-
-    // 🔹 1. Încarcă toate articolele pentru lista de "Ultimele articole"
     const unsubscribe = onValue(articoleRef, (snapshot) => {
       const data = snapshot.val();
       if (data) {
@@ -35,8 +33,6 @@ export default function Articol() {
       }
       setLoading(false);
     });
-
-    // 🔹 2. Crește vizualizările separat, o singură dată
     const articolViewsRef = ref(db, `articole/${id}/views`);
     runTransaction(articolViewsRef, (currentViews) => {
       return (currentViews || 0) + 1;

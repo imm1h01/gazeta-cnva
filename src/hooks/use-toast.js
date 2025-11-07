@@ -1,4 +1,3 @@
-// singleton-style toast manager (module-level state + listeners)
 let count = 0;
 const TOAST_REMOVE_DELAY = 4000;
 const toastTimeouts = new Map();

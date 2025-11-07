@@ -29,9 +29,6 @@ export default function Navbar() {
         <Link to="/" onClick={closeMenu}>Acasă</Link>
         <Link to="/echipa" onClick={closeMenu}>Echipă</Link>
         <Link to="/publicatii" onClick={closeMenu}>Texte</Link>
-        {/*
-        <Link to="/interviuri" onClick={closeMenu}>Interviuri</Link>
-        <Link to="/evenimente" onClick={closeMenu}>Evenimente</Link>*/}
         <Link to="/contact" onClick={closeMenu}>Contact</Link>
       </div>
     </nav>
