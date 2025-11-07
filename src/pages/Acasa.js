@@ -12,7 +12,7 @@ import { ref, onValue } from "firebase/database";
 import { Link } from "react-router-dom";
 
 export default function Acasa() {
-  const text = "La Gazeta CNVA, imperfecțiunea din ochiul atent este desăvârșirea firii de mai presus de cuvinte.";
+  const text = "Din clipele care trec, păstrăm poveștile care rămân.";
   const [displayedText, setDisplayedText] = useState("");
   const [showButton, setShowButton] = useState(false);
   const [articole, setArticole] = useState([]);
@@ -58,9 +58,9 @@ export default function Acasa() {
         i++;
       } else {
         clearInterval(typing);
-        setTimeout(() => setShowButton(true), 500);
+        setTimeout(() => setShowButton(true), 200);
       }
-    }, 40);
+    }, 25);
     return () => clearInterval(typing);
   }, []);
 
@@ -71,9 +71,11 @@ export default function Acasa() {
 
   return (
     <div className="font-[Poppins]">
-      <div className="min-h-screen flex items-center justify-center bg-black text-white px-4 py-8 md:p-6">
+      {/* Adăugat pt-24 pentru spațiu suficient sub bara de navigație */}
+      <div className="min-h-screen flex items-center justify-center bg-black text-white px-4 py-8 md:p-6 pt-24 md:pt-32">
         <div className="max-w-5xl w-full grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-          <div className="flex flex-col items-center justify-center text-center order-2 md:order-1">
+          {/* Text și buton - prima pe mobil */}
+          <div className="flex flex-col items-center justify-center text-center order-1">
             <div className="bg-black/95 rounded-3xl px-6 py-6 md:px-8 md:py-6 shadow-lg max-w-xl w-full">
               <p className="text-base md:text-xl lg:text-2xl font-semibold leading-relaxed md:leading-snug">
                 {displayedText}
@@ -107,7 +109,9 @@ export default function Acasa() {
               </button>
             )}
           </div>
-          <div className="flex items-center justify-center order-1 md:order-2">
+          
+          {/* Ilustrația - a doua pe mobil */}
+          <div className="flex items-center justify-center order-2">
             <img
               src={Omulet}
               alt="omulet illustration"
@@ -117,9 +121,11 @@ export default function Acasa() {
         </div>
       </div>
 
+      {/* Adăugat scroll-margin-top pentru a compensa bara de navigație la anchor */}
       <div
         id="ultimele-articole"
-        className="bg-white text-black py-12 md:py-20 px-4 md:px-12 flex flex-col items-center"
+        className="bg-white text-black py-12 md:py-20 px-4 md:px-12 flex flex-col items-center scroll-mt-24"
+        style={{ scrollMarginTop: '6rem' }}
       >
         <div className="w-full max-w-6xl flex flex-col items-center relative">
           <div className="w-16 h-1 bg-blue-700 mb-2 rounded-full"></div>

@@ -141,17 +141,17 @@ export default function ArticleFormPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       <header className="border-b bg-white shadow-sm sticky top-0 z-50">
-        <div className="container mx-auto px-3 sm:px-4 py-3 sm:py-4 max-w-7xl flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+        <div className="container mx-auto px-3 py-2 max-w-7xl flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
           <div className="flex items-center">
             <Button
               variant="ghost"
               onClick={() => navigate("/admin/dashboard")}
-              className="p-0 h-auto mr-3 text-blue-600 hover:text-blue-700 text-sm sm:text-base"
+              className="p-0 h-auto mr-2 text-blue-600 hover:text-blue-700 text-xs"
             >
-              <ArrowLeft className="h-4 w-4 sm:h-5 sm:w-5 mr-1 sm:mr-2" />
+              <ArrowLeft className="h-3 w-3 mr-1" />
               Înapoi
             </Button>
-            <h1 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-800">
+            <h1 className="text-sm font-bold text-gray-800">
               {isEditMode ? "Editează Articol" : "Articol Nou"}
             </h1>
           </div>
@@ -159,7 +159,7 @@ export default function ArticleFormPage() {
             type="submit"
             onClick={handleSubmit}
             disabled={loading}
-            className="bg-green-600 hover:bg-green-700 text-sm sm:text-base w-full sm:w-auto"
+            className="bg-green-600 hover:bg-green-700 text-xs w-full sm:w-auto"
           >
             {loading
               ? "Se salvează..."
@@ -170,12 +170,12 @@ export default function ArticleFormPage() {
         </div>
       </header>
 
-      <div className="container mx-auto px-3 sm:px-4 py-6 sm:py-8 max-w-7xl">
-        <form onSubmit={handleSubmit} className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8">
-          <div className="lg:col-span-2 space-y-6">
-            <div className="bg-white p-4 sm:p-6 rounded-xl shadow-lg space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="titlu" className="text-base sm:text-lg font-semibold text-gray-700">
+      <div className="container mx-auto px-3 py-4 max-w-7xl">
+        <form onSubmit={handleSubmit} className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+          <div className="lg:col-span-2 space-y-4">
+            <div className="bg-white p-3 rounded-xl shadow-lg space-y-3">
+              <div className="space-y-1">
+                <Label htmlFor="titlu" className="text-sm font-semibold text-gray-700">
                   Titlu *
                 </Label>
                 <Input
@@ -184,24 +184,24 @@ export default function ArticleFormPage() {
                   value={formData.titlu}
                   onChange={handleChange}
                   placeholder="Introdu titlul articolului"
-                  className="text-lg sm:text-xl font-bold p-3"
+                  className="text-sm font-bold p-2"
                 />
               </div>
-              <div className="space-y-2">
-                <Label htmlFor="rezumat" className="text-base sm:text-lg font-semibold text-gray-700">
+              <div className="space-y-1">
+                <Label htmlFor="rezumat" className="text-sm font-semibold text-gray-700">
                   Rezumat
                 </Label>
                 <Textarea
                   id="rezumat"
-                  rows={3}
+                  rows={2}
                   value={formData.rezumat}
                   onChange={handleChange}
                   placeholder="Scurtă descriere a articolului"
-                  className="p-3 text-sm sm:text-base"
+                  className="p-2 text-xs"
                 />
               </div>
-              <div className="space-y-2">
-                <Label className="text-base sm:text-lg font-semibold text-gray-700">
+              <div className="space-y-1">
+                <Label className="text-sm font-semibold text-gray-700">
                   Conținut *
                 </Label>
                 <ContentEditor
@@ -213,19 +213,19 @@ export default function ArticleFormPage() {
             </div>
           </div>
 
-          <div className="lg:col-span-1 space-y-6">
-            <div className="bg-white p-4 sm:p-6 rounded-xl shadow-lg space-y-6 sticky top-20 border border-gray-200 backdrop-blur-md bg-opacity-95">
-              <h3 className="text-lg sm:text-xl font-bold mb-4 text-gray-800 border-b pb-3">
+          <div className="lg:col-span-1 space-y-4">
+            <div className="bg-white p-3 rounded-xl shadow-lg space-y-4 sticky top-16 border border-gray-200 backdrop-blur-md bg-opacity-95">
+              <h3 className="text-sm font-bold mb-2 text-gray-800 border-b pb-2">
                 Setări Articol
               </h3>
 
-              <div className="space-y-2">
-                <Label className="font-semibold text-gray-700 text-sm sm:text-base">Tag-uri</Label>
+              <div className="space-y-1">
+                <Label className="font-semibold text-gray-700 text-xs">Tag-uri</Label>
                 <TagInput value={formData.tags} onChange={handleTagsChange} />
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="autor" className="font-semibold text-gray-700 text-sm sm:text-base">
+              <div className="space-y-1">
+                <Label htmlFor="autor" className="font-semibold text-gray-700 text-xs">
                   Autor *
                 </Label>
                 <Input
@@ -234,12 +234,12 @@ export default function ArticleFormPage() {
                   value={formData.autor}
                   onChange={handleChange}
                   placeholder="Numele autorului"
-                  className="text-sm sm:text-base"
+                  className="text-xs"
                 />
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="imagine" className="font-semibold text-gray-700 text-sm sm:text-base">
+              <div className="space-y-1">
+                <Label htmlFor="imagine" className="font-semibold text-gray-700 text-xs">
                   Imagine Principală (URL)
                 </Label>
                 <Input
@@ -248,14 +248,14 @@ export default function ArticleFormPage() {
                   value={formData.imagine}
                   onChange={handleChange}
                   placeholder="URL imagine"
-                  className="text-sm sm:text-base"
+                  className="text-xs"
                 />
                 {formData.imagine && (
-                  <div className="mt-3 p-3 border border-gray-100 rounded-lg bg-gray-50">
+                  <div className="mt-2 p-2 border border-gray-100 rounded-lg bg-gray-50">
                     <img
                       src={formData.imagine}
                       alt="Preview"
-                      className="w-full h-auto object-cover max-h-32 rounded-md"
+                      className="w-full h-auto object-cover max-h-24 rounded-md"
                       onError={(e) => {
                         e.target.style.display = 'none';
                       }}
@@ -264,8 +264,8 @@ export default function ArticleFormPage() {
                 )}
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="status" className="font-semibold text-gray-700 text-sm sm:text-base">
+              <div className="space-y-1">
+                <Label htmlFor="status" className="font-semibold text-gray-700 text-xs">
                   Status *
                 </Label>
                 <ShadSelect
@@ -274,21 +274,21 @@ export default function ArticleFormPage() {
                     setFormData({ ...formData, status: value })
                   }
                 >
-                  <SelectTrigger className="w-full bg-white/80 backdrop-blur-sm rounded-lg border-gray-300 focus:ring-2 focus:ring-blue-500 text-sm sm:text-base">
+                  <SelectTrigger className="w-full bg-white/80 backdrop-blur-sm rounded-lg border-gray-300 focus:ring-1 focus:ring-blue-500 text-xs">
                     <SelectValue placeholder="Alege statusul" />
                   </SelectTrigger>
                   <SelectContent className="bg-white/90 backdrop-blur-md shadow-lg rounded-lg">
-                    <SelectItem value="draft" className="text-sm sm:text-base">Ciornă</SelectItem>
-                    <SelectItem value="published" className="text-sm sm:text-base">Publicat</SelectItem>
+                    <SelectItem value="draft" className="text-xs">Ciornă</SelectItem>
+                    <SelectItem value="published" className="text-xs">Publicat</SelectItem>
                   </SelectContent>
                 </ShadSelect>
               </div>
 
-              <div className="flex flex-col gap-3 pt-4 border-t mt-6">
+              <div className="flex flex-col gap-2 pt-3 border-t mt-4">
                 <Button
                   type="submit"
                   disabled={loading}
-                  className="w-full bg-blue-600 hover:bg-blue-700 text-sm sm:text-base"
+                  className="w-full bg-blue-600 hover:bg-blue-700 text-xs"
                 >
                   {loading
                     ? "Se salvează..."
@@ -302,7 +302,7 @@ export default function ArticleFormPage() {
                   type="button"
                   variant="outline"
                   onClick={() => navigate("/admin/dashboard")}
-                  className="w-full text-sm sm:text-base"
+                  className="w-full text-xs"
                 >
                   Anulează
                 </Button>

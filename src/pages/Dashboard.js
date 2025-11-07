@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { ref, onValue, remove, update } from "firebase/database";
+import { ref, onValue, remove } from "firebase/database";
 import { db, auth } from "../firebase";
 import { signOut } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
@@ -50,42 +50,42 @@ export default function AdminDashboard() {
   return (
     <div className="min-h-screen bg-gray-50">
       <header className="border-b bg-white shadow-sm sticky top-0 z-50">
-        <div className="container mx-auto px-3 sm:px-4 py-3 sm:py-4">
+        <div className="container mx-auto px-3 py-3">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-            <div className="flex items-center gap-3">
-              <h1 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-800">Panou de Administrare</h1>
-              <p className="text-xs sm:text-sm text-muted-foreground hidden sm:block">Bine ai revenit, {user?.email}</p>
+            <div className="flex items-center gap-2">
+              <h1 className="text-lg font-bold text-gray-800">Panou de Administrare</h1>
+              <p className="text-xs text-muted-foreground hidden sm:block">Bine ai revenit, {user?.email}</p>
             </div>
-            <div className="flex gap-2 sm:gap-3">
-              <Button onClick={handleCreateArticle} className="bg-blue-600 hover:bg-blue-700 text-xs sm:text-sm">
-                <Plus className="mr-1 sm:mr-2 h-3 w-3 sm:h-4 sm:w-4" />
+            <div className="flex gap-2">
+              <Button onClick={handleCreateArticle} className="bg-blue-600 hover:bg-blue-700 text-xs">
+                <Plus className="mr-1 h-3 w-3" />
                 Articol Nou
               </Button>
-              <Button variant="outline" onClick={handleSignOut} className="text-xs sm:text-sm">
-                <LogOut className="mr-1 sm:mr-2 h-3 w-3 sm:h-4 sm:w-4" />
+              <Button variant="outline" onClick={handleSignOut} className="text-xs">
+                <LogOut className="mr-1 h-3 w-3" />
                 Deconectare
               </Button>
             </div>
           </div>
-          <p className="text-xs text-muted-foreground mt-2 sm:hidden">Bine ai revenit, {user?.email}</p>
+          <p className="text-xs text-muted-foreground mt-1 sm:hidden">Bine ai revenit, {user?.email}</p>
         </div>
       </header>
 
-      <div className="container mx-auto px-3 sm:px-4 py-6 sm:py-8">
+      <div className="container mx-auto px-3 py-4">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full max-w-lg grid-cols-2 mb-6 sm:mb-8 bg-white p-1 rounded-lg shadow-inner mx-auto">
+          <TabsList className="grid w-full max-w-md grid-cols-2 mb-4 bg-white p-1 rounded-lg shadow-inner mx-auto">
             <TabsTrigger 
               value="published" 
-              className={`flex items-center text-sm sm:text-lg font-semibold py-2 ${activeTab === 'published' ? 'bg-green-100 text-green-700 shadow' : 'text-gray-500'}`}
+              className={`flex items-center text-xs py-1 ${activeTab === 'published' ? 'bg-green-100 text-green-700 shadow' : 'text-gray-500'}`}
             >
-              <Eye className="mr-1 sm:mr-2 h-4 w-4 sm:h-5 sm:w-5" />
+              <Eye className="mr-1 h-3 w-3" />
               Publicate
             </TabsTrigger>
             <TabsTrigger 
               value="draft" 
-              className={`flex items-center text-sm sm:text-lg font-semibold py-2 ${activeTab === 'draft' ? 'bg-yellow-100 text-yellow-700 shadow' : 'text-gray-500'}`}
+              className={`flex items-center text-xs py-1 ${activeTab === 'draft' ? 'bg-yellow-100 text-yellow-700 shadow' : 'text-gray-500'}`}
             >
-              <EyeOff className="mr-1 sm:mr-2 h-4 w-4 sm:h-5 sm:w-5" />
+              <EyeOff className="mr-1 h-3 w-3" />
               Ciorne
             </TabsTrigger>
           </TabsList>
@@ -199,7 +199,7 @@ function ArticlesTab({ status }) {
     const statusColor = articleStatus === "published" ? "bg-green-500 hover:bg-green-500/80" : "bg-yellow-500 hover:bg-yellow-500/80";
 
     return (
-      <div className="flex gap-2 flex-wrap">
+      <div className="flex gap-1 flex-wrap">
         <Badge className={`${statusColor} text-xs`}>{statusText}</Badge>
         {category && <Badge variant="outline" className="text-xs">{category}</Badge>}
       </div>
@@ -208,67 +208,67 @@ function ArticlesTab({ status }) {
 
   if (loading) {
     return (
-      <div className="text-center py-8">
+      <div className="text-center py-4">
         <p className="text-muted-foreground">Se încarcă articolele...</p>
       </div>
     );
   }
 
   return (
-    <div className="space-y-6">
-      <h2 className="text-lg sm:text-xl font-semibold text-gray-700">
-        {status === "published" ? "Lista Articolelor Publicate" : "Lista Articolelor Ciornă"} ({articles.length})
+    <div className="space-y-4">
+      <h2 className="text-sm font-semibold text-gray-700">
+        {status === "published" ? "Articole Publicate" : "Articole Ciornă"} ({articles.length})
       </h2>
 
       {articles.length === 0 ? (
         <Card className="shadow-none border-dashed bg-white">
-          <CardContent className="py-12 sm:py-16 text-center">
-            <div className="mx-auto w-16 h-16 sm:w-24 sm:h-24 bg-muted rounded-full flex items-center justify-center mb-4">
-              <Plus className="h-6 w-6 sm:h-8 sm:w-8 text-muted-foreground" />
+          <CardContent className="py-8 text-center">
+            <div className="mx-auto w-12 h-12 bg-muted rounded-full flex items-center justify-center mb-2">
+              <Plus className="h-4 w-4 text-muted-foreground" />
             </div>
-            <h3 className="text-base sm:text-lg font-semibold mb-2">
+            <h3 className="text-sm font-semibold mb-1">
               Nu sunt articole disponibile
             </h3>
-            <p className="text-muted-foreground mb-4 max-w-sm mx-auto text-sm sm:text-base">
+            <p className="text-muted-foreground mb-3 max-w-sm mx-auto text-xs">
               {status === "published" 
                 ? "Începe prin a adăuga un articol nou și publică-l."
                 : "Articolele salvate ca ciornă vor apărea aici."
               }
             </p>
-            <Button onClick={() => navigate("/admin/new-article")} variant="secondary" className="text-sm sm:text-base">Adaugă Articol</Button>
+            <Button onClick={() => navigate("/admin/new-article")} variant="secondary" className="text-xs">Adaugă Articol</Button>
           </CardContent>
         </Card>
       ) : (
-        <div className="space-y-4">
+        <div className="space-y-3">
           {articles.map((article) => (
-            <Card key={article.id} className="p-3 sm:p-4 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 transition-all hover:shadow-lg bg-white">
+            <Card key={article.id} className="p-2 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 transition-all hover:shadow-lg bg-white">
               <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2 mb-2">
+                <div className="flex items-center gap-1 mb-1">
                   {getStatusBadge(article.status, article.categorie)}
                 </div>
-                <CardTitle className="text-base sm:text-lg font-semibold mb-1 hover:text-blue-600 transition-colors cursor-pointer line-clamp-2" onClick={() => handleEdit(article)}>
+                <CardTitle className="text-sm font-semibold mb-1 hover:text-blue-600 transition-colors cursor-pointer line-clamp-2" onClick={() => handleEdit(article)}>
                   {article.titlu}
                 </CardTitle>
-                <p className="text-xs sm:text-sm text-gray-500">
+                <p className="text-xs text-gray-500">
                   De {article.autor || 'N/A'} • {article.data || 'N/A'} • {article.views || 0} vizualizări
                 </p>
               </div>
               <div className="flex gap-1 self-end sm:self-auto">
                 <Button 
                   size="sm" 
-                  variant="ghost" 
+                  variant="outline" 
                   onClick={() => handleEdit(article)}
-                  className="h-8 w-8 sm:h-9 sm:w-9 p-0 hover:bg-blue-50 text-blue-600"
+                  className="h-10 w-10 p-0 hover:bg-blue-50 text-blue-600 border-blue-200"
                 >
-                  <Pencil className="h-3 w-3 sm:h-4 sm:w-4" />
+                  <Pencil className="h-3 w-3" />
                 </Button>
                 <Button
                   size="sm"
-                  variant="ghost"
+                  variant="outline"
                   onClick={() => handleDeleteClick(article)}
-                  className="h-8 w-8 sm:h-9 sm:w-9 p-0 text-red-500 hover:bg-red-50"
+                  className="h-10 w-10 p-0 text-red-500 hover:bg-red-50 border-red-200"
                 >
-                  <Trash2 className="h-3 w-3 sm:h-4 sm:w-4" />
+                  <Trash2 className="h-3 w-3" />
                 </Button>
               </div>
             </Card>
@@ -279,24 +279,24 @@ function ArticlesTab({ status }) {
       <Dialog open={deleteConfirmOpen} onOpenChange={setDeleteConfirmOpen}>
         <DialogContent className="bg-white max-w-[95vw] sm:max-w-md rounded-lg mx-auto">
           <DialogHeader>
-            <DialogTitle className="text-lg sm:text-xl">Confirmă ștergerea</DialogTitle>
-            <DialogDescription className="text-sm sm:text-base">
+            <DialogTitle className="text-sm">Confirmă ștergerea</DialogTitle>
+            <DialogDescription className="text-xs">
               Sigur doriți să ștergeți articolul "{articleToDelete?.titlu}"? 
               Această acțiune nu poate fi anulată.
             </DialogDescription>
           </DialogHeader>
-          <div className="flex gap-3 justify-end mt-4 flex-col sm:flex-row">
+          <div className="flex gap-2 justify-end mt-3 flex-col sm:flex-row">
             <Button 
               variant="outline" 
               onClick={() => setDeleteConfirmOpen(false)}
-              className="text-sm sm:text-base"
+              className="text-xs"
             >
               Anulează
             </Button>
             <Button 
               variant="destructive" 
               onClick={handleDeleteConfirm}
-              className="text-sm sm:text-base"
+              className="text-xs"
             >
               Șterge Articol
             </Button>

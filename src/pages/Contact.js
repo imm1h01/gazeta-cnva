@@ -2,8 +2,6 @@ import React from "react";
 import { Mail, Instagram, Facebook, Youtube } from "lucide-react";
 import { motion } from "framer-motion";
 import logo from "../assets/logo_alb.svg";
-import fonts from "../fonts.css";
-
 export default function Contact() {
   return (
     <div className="relative min-h-screen flex flex-col items-center justify-center bg-white overflow-hidden">
