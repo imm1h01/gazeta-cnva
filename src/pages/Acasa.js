@@ -1,0 +1,196 @@
+import React, { useEffect, useState } from "react";
+import Omulet from "../assets/omulet.svg";
+import "../fonts.css";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Navigation, Pagination } from "swiper/modules";
+import "swiper/css";
+import "swiper/css/navigation";
+import "swiper/css/pagination";
+import "./Acasa.css";
+import { db } from "../firebase";
+import { ref, onValue } from "firebase/database";
+import { Link } from "react-router-dom";
+
+export default function Acasa() {
+  const text = "La Gazeta CNVA, imperfecțiunea din ochiul atent este desăvârșirea firii de mai presus de cuvinte.";
+  const [displayedText, setDisplayedText] = useState("");
+  const [showButton, setShowButton] = useState(false);
+  const [articole, setArticole] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const articoleRef = ref(db, 'articole');
+    
+    const unsubscribe = onValue(articoleRef, (snapshot) => {
+      const data = snapshot.val();
+      if (data) {
+        const articoleArray = Object.entries(data).map(([id, articol]) => ({
+          id,
+          ...articol
+        }));
+
+        const articolePublicate = articoleArray
+          .filter(articol => articol.status === "published")
+          .sort((a, b) => new Date(b.data) - new Date(a.data))
+          .slice(0, 5);
+
+        setArticole(articolePublicate);
+      } else {
+        setArticole([]);
+      }
+      setLoading(false);
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  const getCategorie = (tags) => {
+    if (!tags || !Array.isArray(tags)) return "ARTICOLE";
+    return tags.slice(0, 2).join(" · ").toUpperCase() || "ARTICOLE";
+  };
+
+  useEffect(() => {
+    setDisplayedText("");
+    let i = 0;
+    const typing = setInterval(() => {
+      if (i < text.length) {
+        setDisplayedText(text.substring(0, i + 1));
+        i++;
+      } else {
+        clearInterval(typing);
+        setTimeout(() => setShowButton(true), 500);
+      }
+    }, 40);
+    return () => clearInterval(typing);
+  }, []);
+
+  const handleReadMore = () => {
+    const section = document.getElementById("ultimele-articole");
+    if (section) section.scrollIntoView({ behavior: "smooth" });
+  };
+
+  return (
+    <div className="font-[Poppins]">
+      <div className="min-h-screen flex items-center justify-center bg-black text-white px-4 py-8 md:p-6">
+        <div className="max-w-5xl w-full grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+          <div className="flex flex-col items-center justify-center text-center order-2 md:order-1">
+            <div className="bg-black/95 rounded-3xl px-6 py-6 md:px-8 md:py-6 shadow-lg max-w-xl w-full">
+              <p className="text-base md:text-xl lg:text-2xl font-semibold leading-relaxed md:leading-snug">
+                {displayedText}
+              </p>
+            </div>
+            {showButton && (
+              <button
+                style={{
+                  marginTop: "1.5rem",
+                  padding: "0.875rem 1.75rem",
+                  fontSize: "1rem",
+                  backgroundColor: "#0B226C",
+                  color: "white",
+                  border: "none",
+                  borderRadius: "50px",
+                  cursor: "pointer",
+                  transition: "all 0.3s ease",
+                  fontWeight: "600",
+                  letterSpacing: "0.5px",
+                  fontFamily: "BabyDoll, sans-serif",
+                }}
+                onMouseEnter={(e) => {
+                  e.target.style.backgroundColor = "#0056d2";
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.backgroundColor = "#0B226C";
+                }}
+                onClick={handleReadMore}
+              >
+                Citește mai mult
+              </button>
+            )}
+          </div>
+          <div className="flex items-center justify-center order-1 md:order-2">
+            <img
+              src={Omulet}
+              alt="omulet illustration"
+              className="w-56 md:w-80 lg:w-[420px] max-w-full"
+            />
+          </div>
+        </div>
+      </div>
+
+      <div
+        id="ultimele-articole"
+        className="bg-white text-black py-12 md:py-20 px-4 md:px-12 flex flex-col items-center"
+      >
+        <div className="w-full max-w-6xl flex flex-col items-center relative">
+          <div className="w-16 h-1 bg-blue-700 mb-2 rounded-full"></div>
+          <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-2 text-center">
+            Ultimele texte
+          </h2>
+          <p className="text-gray-500 mb-8 md:mb-10 text-center text-sm md:text-base max-w-2xl">
+            Cele mai recente gânduri ale tinerilor autori din Colegiul Național "Vasile Alecsandri", Galați.
+          </p>
+
+          {loading ? (
+            <div className="flex justify-center items-center py-12">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-700"></div>
+            </div>
+          ) : articole.length === 0 ? (
+            <div className="text-center py-12">
+              <p className="text-gray-500">Nu există articole publicate momentan.</p>
+            </div>
+          ) : (
+            <div className="relative w-full flex items-center px-2">
+              <button className="carousel-button-prev hidden md:flex">&#10094;</button>
+              <Swiper
+                modules={[Navigation, Pagination]}
+                navigation={{
+                  nextEl: ".carousel-button-next",
+                  prevEl: ".carousel-button-prev",
+                }}
+                pagination={{ 
+                  clickable: true,
+                  dynamicBullets: true 
+                }}
+                spaceBetween={16}
+                slidesPerView={1}
+                breakpoints={{
+                  640: { slidesPerView: 1.2, spaceBetween: 16 },
+                  768: { slidesPerView: 2, spaceBetween: 20 },
+                  1024: { slidesPerView: 3, spaceBetween: 24 },
+                  1280: { slidesPerView: 3, spaceBetween: 30 },
+                }}
+                className="custom-swiper w-full"
+              >
+                {articole.map((articol) => (
+                  <SwiperSlide key={articol.id}>
+                    <Link to={`/articol/${articol.id}`} className="block h-full">
+                      <div className="bg-white shadow-lg rounded-2xl overflow-hidden border border-gray-200 h-full flex flex-col transition-transform duration-300 hover:scale-105">
+                        <img
+                          src={articol.imagine}
+                          alt={articol.titlu}
+                          className="w-full h-48 md:h-56 object-cover"
+                        />
+                        <div className="p-4 md:p-5 flex flex-col flex-grow">
+                          <span className="inline-block w-fit bg-black text-white text-xs font-semibold px-2 py-1 mb-3">
+                            {getCategorie(articol.tags)}
+                          </span>
+                          <h3 className="text-base md:text-lg font-bold mb-2">
+                            {articol.titlu}
+                          </h3>
+                          <p className="text-xs md:text-sm text-gray-600 mt-auto">
+                            Text de <span className="font-medium">{articol.autor}</span>
+                          </p>
+                        </div>
+                      </div>
+                    </Link>
+                  </SwiperSlide>
+                ))}
+              </Swiper>
+              <button className="carousel-button-next hidden md:flex">&#10095;</button>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
