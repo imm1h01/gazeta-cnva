@@ -1,10 +1,14 @@
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useCallback } from "react";
 import Quill from "quill";
 import "quill/dist/quill.snow.css";
 
 export default function ContentEditor({ value, onChange, placeholder }) {
   const editorRef = useRef(null);
   const quillInstanceRef = useRef(null);
+
+  const handleChange = useCallback((html) => {
+    onChange(html);
+  }, [onChange]);
 
   useEffect(() => {
     if (editorRef.current && !quillInstanceRef.current) {
@@ -53,12 +57,12 @@ export default function ContentEditor({ value, onChange, placeholder }) {
 
       quill.on("text-change", () => {
         const html = quill.root.innerHTML;
-        onChange(html);
+        handleChange(html);
       });
 
       quillInstanceRef.current = quill;
     }
-  }, []);
+  }, [value, placeholder, handleChange]);
 
   useEffect(() => {
     if (quillInstanceRef.current && value !== quillInstanceRef.current.root.innerHTML) {
@@ -74,10 +78,15 @@ export default function ContentEditor({ value, onChange, placeholder }) {
     <div className="content-editor-container border border-gray-300 rounded-lg bg-white overflow-hidden" style={{ height: "400px" }}>
       <div ref={editorRef} className="h-full" />
       <style>{`
+        .content-editor-container {
+          display: flex;
+          flex-direction: column;
+        }
         .content-editor-container .ql-container {
-          height: calc(100% - 42px);
+          flex: 1;
           overflow-y: auto;
           font-size: 14px;
+          border: none !important;
         }
         .content-editor-container .ql-toolbar {
           position: sticky;
@@ -86,18 +95,29 @@ export default function ContentEditor({ value, onChange, placeholder }) {
           z-index: 10;
           border-bottom: 1px solid #e2e8f0;
           padding: 4px;
+          border: none !important;
         }
         .content-editor-container .ql-editor {
           min-height: 300px;
           font-size: 14px;
           line-height: 1.5;
           padding: 12px;
+          overflow-y: visible !important;
         }
         .content-editor-container .ql-toolbar.ql-snow {
           border: none;
         }
         .content-editor-container .ql-container.ql-snow {
           border: none;
+        }
+        /* Remove Quill's default scrollbar from editor */
+        .content-editor-container .ql-editor.ql-blank::before {
+          color: #9ca3af;
+          font-style: normal;
+        }
+        /* Ensure only one scrollbar is visible */
+        .ql-editor {
+          overflow-y: visible !important;
         }
         @media (min-width: 640px) {
           .content-editor-container {
