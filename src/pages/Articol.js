@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { db } from "../firebase";
 import { ref, onValue, runTransaction } from "firebase/database";
+import eye from "../assets/eye.svg";
 
 export default function Articol() {
   const { id } = useParams();
@@ -84,8 +85,9 @@ export default function Articol() {
                     {getCategorie(articol.tags)}
                   </span>
                   <span className="text-gray-500 text-sm">{articol.data}</span>
-                  <span className="text-gray-500 text-sm">
-                    👁 {articol.views ?? 0} vizualizări
+                  <span className="text-gray-500 text-sm flex items-center gap-1">
+                    <img src={eye} alt="vizualizări" className="w-4 h-4" />
+                    {articol.views ?? 0} vizualizări
                   </span>
                 </div>
                 <h1 className="text-3xl md:text-4xl font-bold mb-4 text-gray-900">
