@@ -56,7 +56,7 @@ export default function Publicatii() {
   }
 
   return (
-    <div className="font-[Poppins] min-h-screen bg-gray-50 pt-24 lg:pt-32 pb-8">
+    <div className="font-[Poppins] min-h-screen bg-gray-50 pt-40 lg:pt-52 pb-8">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-8 lg:mb-12">
           <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-4 lg:mb-6">Texte</h1>

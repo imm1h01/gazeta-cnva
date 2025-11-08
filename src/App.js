@@ -51,8 +51,8 @@ function AppContent() {
       <div className="flex-grow">
         <Routes>
           <Route path="/" element={<Acasa />} />
-          <Route path="/echipa" element={<Echipa />} />
-          <Route path="/publicatii" element={<Publicatii />} />
+          <Route path="/despre-noi" element={<Echipa />} />
+          <Route path="/texte" element={<Publicatii />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/admin" element={<Admin />} />
           <Route path="/admin/dashboard" element={<Dashboard />} />

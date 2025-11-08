@@ -38,8 +38,8 @@ export default function Navbar() {
 
       <div className={`nav-links ${isOpen ? "active" : ""}`}>
         <Link to="/" onClick={closeMenu}>Acasă</Link>
-        <Link to="/echipa" onClick={closeMenu}>Echipă</Link>
-        <Link to="/publicatii" onClick={closeMenu}>Texte</Link>
+        <Link to="/despre-noi" onClick={closeMenu}>Despre noi</Link>
+        <Link to="/texte" onClick={closeMenu}>Texte</Link>
         <Link to="/contact" onClick={closeMenu}>Contact</Link>
       </div>
     </nav>
