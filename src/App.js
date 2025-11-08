@@ -38,8 +38,8 @@ function AppContent() {
 
   const footerNavLinks = [
     { name: "Acasă", path: "/" },
-    { name: "Echipă", path: "/echipa" },
-    { name: "Texte", path: "/publicatii" },
+    { name: "Despre noi", path: "/despre-noi" },
+    { name: "Texte", path: "/texte" },
     { name: "Revistă", path: null },
     { name: "Contact", path: "/contact" },
   ];
