@@ -1,28 +1,23 @@
-const fs = require('fs');
-const path = require('path');
+const { SitemapStream, streamToPromise } = require('sitemap');
+const { createWriteStream } = require('fs');
 
 const BASE_URL = 'https://gazetacnva.ro';
 
-const routes = ['/', '/despre-noi', '/texte', '/contact'];
+const links = [
+  { url: '/', changefreq: 'weekly', priority: 1.0 },
+  { url: '/despre-noi', changefreq: 'monthly', priority: 0.8 },
+  { url: '/texte', changefreq: 'weekly', priority: 0.9 },
+  { url: '/contact', changefreq: 'yearly', priority: 0.6 },
+];
 
-const sitemap =
-  `<?xml version="1.0" encoding="UTF-8"?>\n` +
-  `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n` +
-  routes
-    .map(
-      (route) => `  <url>
-    <loc>${BASE_URL}${route}</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>`
-    )
-    .join('\n') +
-  '\n</urlset>';
+const sitemap = new SitemapStream({ hostname: BASE_URL });
 
-const outputPath = path.join(__dirname, 'public', 'sitemap.xml');
+streamToPromise(sitemap)
+  .then((data) => {
+    require('fs').writeFileSync('./public/sitemap.xml', data.toString());
+    console.log('Sitemap generat cu succes!');
+  })
+  .catch(console.error);
 
-fs.mkdirSync(path.dirname(outputPath), { recursive: true });
-
-fs.writeFileSync(outputPath, sitemap, 'utf8');
-
-console.log('Sitemap generat cu succes la:', outputPath);
+links.forEach((link) => sitemap.write(link));
+sitemap.end();
