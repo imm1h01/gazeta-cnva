@@ -129,7 +129,6 @@ Firebase Authentication is used for secure admin access. Only verified users can
 **Firebase services used:**
 - Realtime Database  
 - Authentication  
-- Hosting (optional for testing)  
 
 ---
 
