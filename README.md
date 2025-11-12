@@ -1,6 +1,6 @@
 # Gazeta CNVA
 
-Gazeta CNVA is a web platform built for publishing and managing online articles and creative texts.  
+Gazeta CNVA is a web platform built for publishing and managing online articles, texts, and updates for "Vasile Alecsandri" National College, Galati magazine.  
 The project is implemented as a **React.js single-page application**, using **Firebase** for backend services and hosted on **Cloudflare Pages** with a custom `.ro` domain.
 
 **Live site:** [https://gazetacnva.ro](https://gazetacnva.ro)
@@ -13,10 +13,10 @@ Gazeta CNVA is designed as a modern, fast, and scalable website that allows dyna
 It provides a responsive layout and integrates Firebase for real-time content management.
 
 ### Main site sections:
-- **Home (Acasă)** – Landing page and latest content highlights  
-- **About Us (Despre Noi)** – Information about the project and contributors  
-- **Texts (Texte)** – Collection of articles, stories, and poems stored in Firebase  
-- **Contact (Contact)** – Contact form and submission functionality  
+- **Home** – Landing page and latest content highlights  
+- **About Us** – Information about the project and contributors  
+- **Texts** – Collection of articles, stories, and poems stored in Firebase  
+- **Contact** – Contact form and submission functionality  
 
 ---
 
@@ -76,6 +76,7 @@ REACT_APP_FIREBASE_APP_ID=your_app_id
 npm start
 ```
 The app will run locally at [http://localhost:3000](http://localhost:3000).
+After running the development server (npm start), the app will be accessible at http://localhost:3000. You can navigate the site to read articles, and any changes you make to the source code will live-reload in the browser.
 
 ### 6. Build the production version
 ```bash
