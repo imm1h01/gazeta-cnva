@@ -1,71 +1,140 @@
-# Getting Started with Create React App
+# Gazeta CNVA
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Gazeta CNVA is a web platform built for publishing and managing online articles and creative texts.  
+The project is implemented as a **React.js single-page application**, using **Firebase** for backend services and hosted on **Cloudflare Pages** with a custom `.ro` domain.
 
-## Available Scripts
+**Live site:** [https://gazetacnva.ro](https://gazetacnva.ro)
 
-In the project directory, you can run:
+---
 
-### `npm start`
+## Overview
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+Gazeta CNVA is designed as a modern, fast, and scalable website that allows dynamic content updates and user authentication.  
+It provides a responsive layout and integrates Firebase for real-time content management.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+### Main site sections:
+- **Home (Acasă)** – Landing page and latest content highlights  
+- **About Us (Despre Noi)** – Information about the project and contributors  
+- **Texts (Texte)** – Collection of articles, stories, and poems stored in Firebase  
+- **Contact (Contact)** – Contact form and submission functionality  
 
-### `npm test`
+---
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## Technologies Used
 
-### `npm run build`
+### Frontend
+- **React.js** – Component-based UI framework for building fast and dynamic interfaces  
+- **HTML5 / CSS3 / JavaScript (ES6)** – Core web technologies  
+- **Node.js & npm** – Used for dependency management and local development environment  
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+### Backend & Database
+- **Firebase Realtime Database** – Stores and retrieves dynamic content such as articles, text entries, and metadata in real time  
+- **Firebase Authentication** – Handles secure admin login for content management and publishing  
 
 ### Deployment
+- **Cloudflare Pages** – Used for static site deployment and global CDN distribution  
+- **RoTLD (.ro)** – Domain registrar for the live domain [gazetacnva.ro](https://gazetacnva.ro)  
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+---
 
-### `npm run build` fails to minify
+## Installation and Setup
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
-"# gazeta-cnva" 
+Follow the steps below to set up and run the project locally.
+
+### 1. Clone the repository
+```bash
+git clone https://github.com/imm1h01/gazeta-cnva.git
+```
+
+### 2. Navigate to the project directory
+```bash
+cd gazeta-cnva
+```
+
+### 3. Install dependencies
+```bash
+npm install
+```
+
+### 4. Configure Firebase
+Create a `.env` file in the project root directory and add your Firebase credentials:
+
+```bash
+REACT_APP_FIREBASE_API_KEY=your_api_key
+REACT_APP_FIREBASE_AUTH_DOMAIN=your_auth_domain
+REACT_APP_FIREBASE_DATABASE_URL=your_database_url
+REACT_APP_FIREBASE_PROJECT_ID=your_project_id
+REACT_APP_FIREBASE_STORAGE_BUCKET=your_storage_bucket
+REACT_APP_FIREBASE_MESSAGING_SENDER_ID=your_sender_id
+REACT_APP_FIREBASE_APP_ID=your_app_id
+```
+
+> Make sure not to expose your Firebase credentials publicly.
+
+### 5. Run the development server
+```bash
+npm start
+```
+The app will run locally at [http://localhost:3000](http://localhost:3000).
+
+### 6. Build the production version
+```bash
+npm run build
+```
+This command creates an optimized production build in the `build/` folder, ready for deployment.
+
+---
+
+## Deployment
+
+The production build is deployed via **Cloudflare Pages**.
+
+**Deployment configuration:**
+- **Build command:** `npm run build`  
+- **Output directory:** `build`  
+
+DNS management and the live domain **gazetacnva.ro** are handled via **RoTLD**.
+
+The live site is available at:  
+[https://gazetacnva.ro](https://gazetacnva.ro)
+
+---
+
+## Project Structure
+
+```
+gazeta-cnva/
+├── public/                # Static assets and HTML template
+├── src/
+│   ├── components/        # Reusable React components
+│   ├── pages/             # Main site pages (Home, About, Texts, Contact)
+│   ├── firebase.js        # Firebase configuration and initialization
+│   ├── App.js             # Main React app entry point
+│   └── index.js           # Root render file
+├── .env.example           # Example environment variables (Firebase config)
+├── package.json           # Project metadata and dependencies
+└── README.md              # Documentation
+```
+
+---
+
+## Firebase Integration
+
+This project uses **Firebase Realtime Database** to dynamically store and serve text content.  
+Each article or text entry is saved as a JSON object and retrieved in real time when the page loads.
+
+Firebase Authentication is used for secure admin access. Only verified users can log in to the admin dashboard and perform create/update/delete actions on the database.
+
+**Firebase services used:**
+- Realtime Database  
+- Authentication  
+- Hosting (optional for testing)  
+
+---
+
+## License
+
+All rights reserved © 2025.  
+This project is developed and maintained by Mihai Condrici in partnership with the Gazeta CNVA management team.
+
+---
