@@ -30,7 +30,6 @@ export default function ArticleFormPage() {
   const isEditMode = !!articleId;
 
   const [loading, setLoading] = useState(false);
-  const [initialLoading, setInitialLoading] = useState(isEditMode);
   const [content, setContent] = useState("");
   const [formData, setFormData] = useState({
     titlu: "",
@@ -51,29 +50,26 @@ export default function ArticleFormPage() {
   }, [formData.titlu, isEditMode]);
 
   useEffect(() => {
-    if (isEditMode) {
-      const fetchArticle = async () => {
-        try {
-          const articleRef = ref(db, `articole/${articleId}`);
-          const snapshot = await get(articleRef);
-          if (snapshot.exists()) {
-            const articleData = snapshot.val();
-            setFormData(articleData);
-            setContent(articleData.continut || "");
-          } else {
-            toast({ title: "Eroare", description: "Articolul nu a fost găsit.", variant: "destructive" });
-            navigate("/admin/dashboard");
-          }
-        } catch (error) {
-          toast({ title: "Eroare", description: "Eroare la încărcarea articolului.", variant: "destructive" });
+    const fetchArticle = async () => {
+      try {
+        const articleRef = ref(db, `articole/${articleId}`);
+        const snapshot = await get(articleRef);
+        if (snapshot.exists()) {
+          const articleData = snapshot.val();
+          setFormData(articleData);
+          setContent(articleData.continut || "");
+        } else {
+          toast({ title: "Eroare", description: "Articolul nu a fost găsit.", variant: "destructive" });
           navigate("/admin/dashboard");
-        } finally {
-          setInitialLoading(false);
         }
-      };
+      } catch (error) {
+        toast({ title: "Eroare", description: "Eroare la încărcarea articolului.", variant: "destructive" });
+        navigate("/admin/dashboard");
+      }
+    };
+    
+    if (isEditMode) {
       fetchArticle();
-    } else {
-      setInitialLoading(false);
     }
   }, [isEditMode, articleId, navigate, toast]);
 
@@ -98,60 +94,60 @@ export default function ArticleFormPage() {
     setFormData(prev => ({ ...prev, slug }));
   };
 
-const handleSubmit = async (e) => {
-  e.preventDefault();
-  setLoading(true);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
 
-  const finalFormData = { 
-    ...formData, 
-    continut: content,
-    slug: formData.slug || generateSlug(formData.titlu)
-  };
+    const finalFormData = { 
+      ...formData, 
+      continut: content,
+      slug: formData.slug || generateSlug(formData.titlu)
+    };
 
-  const cleanContent = content.replace(/<p><br><\/p>/g, '').trim();
+    const cleanContent = content.replace(/<p><br><\/p>/g, '').trim();
 
-  if (!finalFormData.titlu || !finalFormData.autor || !cleanContent || !finalFormData.slug) {
-    toast({
-      title: "Eroare",
-      description: "Completați câmpurile obligatorii (Titlu, Autor, Conținut, Slug).",
-      variant: "destructive",
-    });
-    setLoading(false);
-    return;
-  }
-
-  try {
-    if (isEditMode) {
-      await update(ref(db, `articole/${articleId}`), finalFormData);
-      toast({ title: "Succes", description: "Articolul a fost actualizat!" });
-    } else {
-      const newArticleRef = push(ref(db, "articole/"));
-      await set(newArticleRef, {
-        ...finalFormData,
-        data: new Date().toLocaleDateString("ro-RO", {
-          day: "numeric",
-          month: "short",
-          year: "numeric",
-        }).replace(/\./g, ""),
-        views: 0
-      });
+    if (!finalFormData.titlu || !finalFormData.autor || !cleanContent || !finalFormData.slug) {
       toast({
-        title: "Succes",
-        description: `Articolul a fost ${finalFormData.status === "published" ? "publicat" : "salvat ca ciornă"}.`,
+        title: "Eroare",
+        description: "Completați câmpurile obligatorii (Titlu, Autor, Conținut, Slug).",
+        variant: "destructive",
       });
+      setLoading(false);
+      return;
     }
-    navigate("/admin/dashboard");
-  } catch (error) {
-    console.error("Submit error:", error);
-    toast({
-      title: "Eroare la salvare",
-      description: error.message || "Articolul nu a putut fi salvat.",
-      variant: "destructive",
-    });
-  } finally {
-    setLoading(false);
-  }
-};
+
+    try {
+      if (isEditMode) {
+        await update(ref(db, `articole/${articleId}`), finalFormData);
+        toast({ title: "Succes", description: "Articolul a fost actualizat!" });
+      } else {
+        const newArticleRef = push(ref(db, "articole/"));
+        await set(newArticleRef, {
+          ...finalFormData,
+          data: new Date().toLocaleDateString("ro-RO", {
+            day: "numeric",
+            month: "short",
+            year: "numeric",
+          }).replace(/\./g, ""),
+          views: 0
+        });
+        toast({
+          title: "Succes",
+          description: `Articolul a fost ${finalFormData.status === "published" ? "publicat" : "salvat ca ciornă"}.`,
+        });
+      }
+      navigate("/admin/dashboard");
+    } catch (error) {
+      console.error("Submit error:", error);
+      toast({
+        title: "Eroare la salvare",
+        description: error.message || "Articolul nu a putut fi salvat.",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
