@@ -12,6 +12,17 @@ import { ArrowLeft } from "lucide-react";
 import TagInput from "../components/TagInput";
 import ContentEditor from "../components/ContentEditor";
 
+function generateSlug(title) {
+  return title
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9\s-]/g, "")
+    .trim()
+    .replace(/\s+/g, "-")
+    .replace(/-+/g, "-");
+}
+
 export default function ArticleFormPage() {
   const { toast } = useToast();
   const navigate = useNavigate();
@@ -29,7 +40,15 @@ export default function ArticleFormPage() {
     tags: [],
     imagine: "",
     status: "draft",
+    slug: ""
   });
+
+  useEffect(() => {
+    if (formData.titlu && !isEditMode) {
+      const slug = generateSlug(formData.titlu);
+      setFormData(prev => ({ ...prev, slug }));
+    }
+  }, [formData.titlu, isEditMode]);
 
   useEffect(() => {
     if (isEditMode) {
@@ -63,80 +82,76 @@ export default function ArticleFormPage() {
   };
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.id]: e.target.value });
+    const { id, value } = e.target;
+    setFormData(prev => ({ 
+      ...prev, 
+      [id]: value 
+    }));
   };
 
   const handleTagsChange = (tags) => {
     setFormData({ ...formData, tags });
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-
-    const finalFormData = { 
-      ...formData, 
-      continut: content 
-    };
-
-    const cleanContent = content.replace(/<p><br><\/p>/g, '').trim();
-
-    if (!finalFormData.titlu || !finalFormData.autor || !cleanContent) {
-      toast({
-        title: "Eroare",
-        description: "Completați câmpurile obligatorii (Titlu, Autor, Conținut).",
-        variant: "destructive",
-      });
-      setLoading(false);
-      return;
-    }
-
-    try {
-      const timestamp = Date.now();
-      
-      if (isEditMode) {
-        await update(ref(db, `articole/${articleId}`), {
-          ...finalFormData,
-          timestamp
-        });
-        toast({ title: "Succes", description: "Articolul a fost actualizat!" });
-      } else {
-        const newArticleRef = push(ref(db, "articole/"));
-        await set(newArticleRef, {
-          ...finalFormData,
-          data: new Date().toLocaleDateString("ro-RO", {
-            day: "numeric",
-            month: "short",
-            year: "numeric",
-          }).replace(/\./g, ""),
-          views: 0,
-          timestamp
-        });
-        toast({
-          title: "Succes",
-          description: `Articolul a fost ${finalFormData.status === "published" ? "publicat" : "salvat ca ciornă"}.`,
-        });
-      }
-      navigate("/admin/dashboard");
-    } catch (error) {
-      console.error("Submit error:", error);
-      toast({
-        title: "Eroare la salvare",
-        description: error.message || "Articolul nu a putut fi salvat.",
-        variant: "destructive",
-      });
-    } finally {
-      setLoading(false);
-    }
+  const handleSlugChange = (e) => {
+    const slug = generateSlug(e.target.value);
+    setFormData(prev => ({ ...prev, slug }));
   };
 
-  if (initialLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <p className="text-muted-foreground">Se încarcă articolul...</p>
-      </div>
-    );
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  setLoading(true);
+
+  const finalFormData = { 
+    ...formData, 
+    continut: content,
+    slug: formData.slug || generateSlug(formData.titlu)
+  };
+
+  const cleanContent = content.replace(/<p><br><\/p>/g, '').trim();
+
+  if (!finalFormData.titlu || !finalFormData.autor || !cleanContent || !finalFormData.slug) {
+    toast({
+      title: "Eroare",
+      description: "Completați câmpurile obligatorii (Titlu, Autor, Conținut, Slug).",
+      variant: "destructive",
+    });
+    setLoading(false);
+    return;
   }
+
+  try {
+    if (isEditMode) {
+      await update(ref(db, `articole/${articleId}`), finalFormData);
+      toast({ title: "Succes", description: "Articolul a fost actualizat!" });
+    } else {
+      const newArticleRef = push(ref(db, "articole/"));
+      await set(newArticleRef, {
+        ...finalFormData,
+        data: new Date().toLocaleDateString("ro-RO", {
+          day: "numeric",
+          month: "short",
+          year: "numeric",
+        }).replace(/\./g, ""),
+        views: 0
+      });
+      toast({
+        title: "Succes",
+        description: `Articolul a fost ${finalFormData.status === "published" ? "publicat" : "salvat ca ciornă"}.`,
+      });
+    }
+    navigate("/admin/dashboard");
+  } catch (error) {
+    console.error("Submit error:", error);
+    toast({
+      title: "Eroare la salvare",
+      description: error.message || "Articolul nu a putut fi salvat.",
+      variant: "destructive",
+    });
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -187,6 +202,24 @@ export default function ArticleFormPage() {
                   className="text-sm font-bold p-2"
                 />
               </div>
+
+              <div className="space-y-1">
+                <Label htmlFor="slug" className="text-sm font-semibold text-gray-700">
+                  URL Slug *
+                </Label>
+                <Input
+                  id="slug"
+                  required
+                  value={formData.slug}
+                  onChange={handleSlugChange}
+                  placeholder="url-prietenos-pentru-seo"
+                  className="text-sm p-2 font-mono"
+                />
+                <p className="text-xs text-gray-500">
+                  Acesta va fi URL-ul articolului: /articol/<span className="font-semibold">{formData.slug || 'url-prietenos'}</span>
+                </p>
+              </div>
+
               <div className="space-y-1">
                 <Label htmlFor="rezumat" className="text-sm font-semibold text-gray-700">
                   Rezumat

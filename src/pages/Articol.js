@@ -1,46 +1,96 @@
 import React, { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { db } from "../firebase";
-import { ref, onValue, runTransaction } from "firebase/database";
+import { ref, onValue, update } from "firebase/database";
 import eye from "../assets/eye.svg";
 
+const parseDate = (dateStr) => {
+  if (!dateStr) return new Date(0);
+  
+  const months = {
+    'ian': 0, 'feb': 1, 'mar': 2, 'apr': 3, 'mai': 4, 'iun': 5,
+    'iul': 6, 'aug': 7, 'sep': 8, 'oct': 9, 'nov': 10, 'dec': 11
+  };
+  
+  const parts = dateStr.split(' ');
+  if (parts.length !== 3) return new Date(0);
+  
+  const day = parseInt(parts[0]);
+  const monthStr = parts[1].toLowerCase();
+  const month = months[monthStr];
+  const year = parseInt(parts[2]);
+  
+  if (isNaN(day) || isNaN(year) || month === undefined) return new Date(0);
+  
+  return new Date(year, month, day);
+};
+
 export default function Articol() {
-  const { id } = useParams();
+  const { slug } = useParams();
   const [articol, setArticol] = useState(null);
   const [ultimeleArticole, setUltimeleArticole] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [notFound, setNotFound] = useState(false);
 
   useEffect(() => {
-    const articoleRef = ref(db, "articole");
+    if (!slug) {
+      setNotFound(true);
+      setLoading(false);
+      return;
+    }
+
+    const articoleRef = ref(db, 'articole');
+    
     const unsubscribe = onValue(articoleRef, (snapshot) => {
       const data = snapshot.val();
       if (data) {
-        const articoleArray = Object.entries(data).map(([idArticol, articolData]) => ({
-          id: idArticol,
-          ...articolData,
+        const articoleArray = Object.entries(data).map(([id, articolData]) => ({
+          id,
+          ...articolData
         }));
 
-        const articolePublicate = articoleArray
-          .filter((articol) => articol.status === "published")
-          .sort((a, b) => new Date(b.data) - new Date(a.data));
+        const articolCurent = articoleArray.find(art => 
+          art.slug && art.slug === slug && art.status === "published"
+        );
+        
+        if (articolCurent) {
+          setArticol(articolCurent);
+          setNotFound(false);
+          const toateArticolele = articoleArray
+            .filter(art => art.slug && art.slug !== slug && art.status === "published")
+            .sort((a, b) => parseDate(b.data) - parseDate(a.data));
+          const ultimele = toateArticolele.slice(0, 3);
 
-        const articolCurent = articolePublicate.find((art) => art.id === id);
-        setArticol(articolCurent);
-
-        const ultimele = articolePublicate
-          .filter((art) => art.id !== id)
-          .slice(0, 3);
-        setUltimeleArticole(ultimele);
+          setUltimeleArticole(ultimele);
+        } else {
+          setNotFound(true);
+        }
+      } else {
+        setNotFound(true);
       }
       setLoading(false);
     });
-    const articolViewsRef = ref(db, `articole/${id}/views`);
-    runTransaction(articolViewsRef, (currentViews) => {
-      return (currentViews || 0) + 1;
-    });
 
     return () => unsubscribe();
-  }, [id]);
+  }, [slug]);
+
+  useEffect(() => {
+    if (articol && articol.id && !sessionStorage.getItem(`viewed-${articol.id}`)) {
+      const incrementViews = async () => {
+        try {
+          const currentViews = articol.views || 0;
+          await update(ref(db, `articole/${articol.id}`), {
+            views: currentViews + 1
+          });
+          sessionStorage.setItem(`viewed-${articol.id}`, 'true');
+        } catch (error) {
+          console.error("Error incrementing views:", error);
+        }
+      };
+
+      incrementViews();
+    }
+  }, [articol]);
 
   const getCategorie = (tags) => {
     if (!tags || !Array.isArray(tags)) return "ARTICOLE";
@@ -55,11 +105,12 @@ export default function Articol() {
     );
   }
 
-  if (!articol) {
+  if (notFound || !articol) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
           <h1 className="text-2xl font-bold mb-4">Articolul nu a fost găsit</h1>
+          <p className="text-gray-600 mb-4">URL-ul articolului este invalid sau articolul a fost șters.</p>
           <Link to="/" className="text-blue-600 hover:text-blue-800">
             Înapoi la pagina principală
           </Link>
@@ -74,11 +125,13 @@ export default function Articol() {
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
           <div className="lg:col-span-3">
             <article className="bg-white rounded-xl shadow-lg overflow-hidden">
-              <img
-                src={articol.imagine}
-                alt={articol.titlu}
-                className="w-full h-64 md:h-96 object-cover"
-              />
+              {articol.imagine && (
+                <img
+                  src={articol.imagine}
+                  alt={articol.titlu}
+                  className="w-full h-64 md:h-96 object-cover"
+                />
+              )}
               <div className="p-6 md:p-8">
                 <div className="flex flex-wrap items-center gap-4 mb-4">
                   <span className="bg-black text-white text-xs font-semibold px-3 py-1 rounded">
@@ -100,7 +153,7 @@ export default function Articol() {
                   </span>
                 </p>
                 <div
-                  className="prose max-w-none text-gray-700 leading-relaxed"
+                  className="prose max-w-none text-gray-700 leading-relaxed whitespace-pre-wrap"
                   dangerouslySetInnerHTML={{ __html: articol.continut }}
                 />
               </div>
@@ -108,7 +161,7 @@ export default function Articol() {
           </div>
 
           <div className="lg:col-span-1">
-            <div className="bg-white rounded-xl shadow-lg p-6 sticky top-8">
+            <div className="bg-white rounded-xl shadow-lg p-6 sticky top-24">
               <h2 className="text-xl font-bold mb-6 text-gray-900 border-b pb-3">
                 Ultimele articole
               </h2>
@@ -116,15 +169,17 @@ export default function Articol() {
                 {ultimeleArticole.map((articol) => (
                   <Link
                     key={articol.id}
-                    to={`/articol/${articol.id}`}
+                    to={`/articol/${articol.slug}`}
                     className="block group hover:no-underline"
                   >
                     <div className="flex flex-col space-y-3">
-                      <img
-                        src={articol.imagine}
-                        alt={articol.titlu}
-                        className="w-full h-24 object-cover rounded-lg"
-                      />
+                      {articol.imagine && (
+                        <img
+                          src={articol.imagine}
+                          alt={articol.titlu}
+                          className="w-full h-24 object-cover rounded-lg"
+                        />
+                      )}
                       <div>
                         <h3 className="font-semibold text-gray-900 group-hover:text-blue-600 transition-colors text-sm leading-tight mb-1">
                           {articol.titlu}

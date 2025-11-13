@@ -58,7 +58,7 @@ function AppContent() {
           <Route path="/admin/dashboard" element={<Dashboard />} />
           <Route path="/admin/new-article" element={<NewArticlePage />} />
           <Route path="/admin/edit-article/:articleId" element={<NewArticlePage />} />
-          <Route path="/articol/:id" element={<Articol />} />
+          <Route path="/articol/:slug" element={<Articol />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </div>

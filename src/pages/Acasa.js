@@ -11,6 +11,29 @@ import { db } from "../firebase";
 import { ref, onValue } from "firebase/database";
 import { Link } from "react-router-dom";
 
+const parseDate = (dateStr) => {
+  if (!dateStr) return new Date(0);
+  const months = {
+    'ian': 0, 'feb': 1, 'mar': 2, 'apr': 3, 'mai': 4, 'iun': 5,
+    'iul': 6, 'aug': 7, 'sep': 8, 'oct': 9, 'nov': 10, 'dec': 11
+  };
+  
+  const parts = dateStr.split(' ');
+  if (parts.length !== 3) return new Date(0);
+  
+  const day = parseInt(parts[0]);
+  const monthStr = parts[1].toLowerCase();
+  const month = months[monthStr];
+  const year = parseInt(parts[2]);
+  
+  if (isNaN(day) || isNaN(year) || month === undefined) {
+    console.warn('Invalid date format:', dateStr);
+    return new Date(0);
+  }
+  
+  return new Date(year, month, day);
+};
+
 export default function Acasa() {
   const text = "Din clipele care trec, păstrăm poveștile care rămân.";
   const [displayedText, setDisplayedText] = useState("");
@@ -30,8 +53,8 @@ export default function Acasa() {
         }));
 
         const articolePublicate = articoleArray
-          .filter(articol => articol.status === "published")
-          .sort((a, b) => new Date(b.data) - new Date(a.data))
+          .filter(articol => articol.status === "published" && articol.slug)
+          .sort((a, b) => parseDate(b.data) - parseDate(a.data))
           .slice(0, 5);
 
         setArticole(articolePublicate);
@@ -227,13 +250,15 @@ export default function Acasa() {
               >
                 {articole.map((articol) => (
                   <SwiperSlide key={articol.id}>
-                    <Link to={`/articol/${articol.id}`} className="block h-full">
+                    <Link to={`/articol/${articol.slug}`} className="block h-full">
                       <div className="bg-white shadow-lg rounded-2xl overflow-hidden border border-gray-200 h-full flex flex-col transition-transform duration-300 hover:scale-105">
-                        <img
-                          src={articol.imagine}
-                          alt={articol.titlu}
-                          className="w-full h-48 md:h-56 object-cover"
-                        />
+                        {articol.imagine && (
+                          <img
+                            src={articol.imagine}
+                            alt={articol.titlu}
+                            className="w-full h-48 md:h-56 object-cover"
+                          />
+                        )}
                         <div className="p-4 md:p-5 flex flex-col flex-grow">
                           <span className="inline-block w-fit bg-black text-white text-xs font-semibold px-2 py-1 mb-3">
                             {getCategorie(articol.tags)}
