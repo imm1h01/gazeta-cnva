@@ -9,6 +9,8 @@ import Admin from "./pages/Admin.js";
 import Dashboard from "./pages/Dashboard.js";
 import NewArticlePage from "./pages/NewArticlePage.js";
 import Articol from "./pages/Articol.js";
+import Revista from "./pages/Revista.js";
+import RevistaViewer from "./components/RevistaViewer";
 import logo from "./assets/logo_alb.svg";
 import omulet from "./assets/omulet.svg";
 import { Toaster } from "./components/toaster.jsx";
@@ -40,7 +42,7 @@ function AppContent() {
     { name: "Acasă", path: "/" },
     { name: "Despre noi", path: "/despre-noi" },
     { name: "Texte", path: "/texte" },
-    { name: "Revistă", path: null },
+    { name: "Revistă", path: "/revista" },
     { name: "Contact", path: "/contact" },
   ];
 
@@ -59,7 +61,9 @@ function AppContent() {
           <Route path="/admin/new-article" element={<NewArticlePage />} />
           <Route path="/admin/edit-article/:articleId" element={<NewArticlePage />} />
           <Route path="/articol/:slug" element={<Articol />} />
-          <Route path="*" element={<NotFound />} />
+          <Route path="/revista" element={<Revista />} />
+            <Route path="/revista/:id" element={<RevistaViewer />} />
+            <Route path="*" element={<NotFound />} />
         </Routes>
       </div>
 
