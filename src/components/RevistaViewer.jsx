@@ -23,15 +23,13 @@ const PdfPageDisplay = ({ pageNum, spreadLength, isLeft, onError, userZoom, isMo
     }
 
     return (
-        <div className="relative bg-white rounded-xl shadow-2xl border-2 border-gray-300 overflow-hidden">
-            <div className={`w-full h-full bg-white flex items-center justify-center relative transform transition-all duration-500`}>
+        <div className="relative rounded-xl shadow-2xl overflow-hidden">
+            <div className={`w-full h-full flex items-center justify-center relative transform transition-all duration-500`}>
                 <Page
                     pageNumber={pageNum}
                     width={baseWidth * userZoom}
                     renderTextLayer={false}
                     renderAnnotationLayer={false}
-                    className="shadow-md"
-                    onError={onError}
                     loading={
                         <div className="flex items-center justify-center h-full w-full p-4 min-h-[300px] md:min-h-[400px]">
                             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-700"></div>
@@ -86,6 +84,7 @@ export default function RevistaViewer() {
     const zoomOut = useCallback(() => {
         setUserZoom(prev => Math.max(prev - 0.2, 0.5));
     }, []);
+
     const generateSpreads = useCallback((total) => {
         if (!total) return [];
 
@@ -275,7 +274,6 @@ export default function RevistaViewer() {
             <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8">
                 <div className="bg-black/50 backdrop-blur-lg rounded-2xl shadow-2xl p-4 md:p-6 mb-6 md:mb-8 border border-gray-800">
                     <div className="flex flex-col gap-4">
-                        {/* Titlu */}
                         <div className="flex-1 text-center">
                             <h1 className="text-lg md:text-2xl lg:text-3xl font-bold text-white mb-2 line-clamp-2">
                                 {revistaData.titlu}
@@ -301,35 +299,36 @@ export default function RevistaViewer() {
                                     Înainte
                                 </button>
                             </div>
-                            <div className="flex items-center justify-center gap-3 order-1 sm:order-2">
-                                <button
-                                    onClick={zoomOut}
-                                    disabled={userZoom <= 0.5}
-                                    className="p-1 md:p-2 bg-gray-700 text-white rounded disabled:opacity-50"
-                                >
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                        <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="8" y1="11" x2="14" y2="11"/>
-                                    </svg>
-                                </button>
-                                <span className="text-white text-sm md:text-base min-w-[45px] text-center">
-                                    {Math.round(userZoom * 100)}%
-                                </span>
-                                <button
-                                    onClick={zoomIn}
-                                    disabled={userZoom >= 3.0}
-                                    className="p-1 md:p-2 bg-gray-700 text-white rounded disabled:opacity-50"
-                                >
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                        <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/>
-                                    </svg>
-                                </button>
-                            </div>
+                            {!isMobile && (
+                                <div className="flex items-center justify-center gap-3 order-1 sm:order-2">
+                                    <button
+                                        onClick={zoomOut}
+                                        disabled={userZoom <= 0.5}
+                                        className="p-1 md:p-2 bg-gray-700 text-white rounded disabled:opacity-50"
+                                    >
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                            <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="8" y1="11" x2="14" y2="11"/>
+                                        </svg>
+                                    </button>
+                                    <span className="text-white text-sm md:text-base min-w-[45px] text-center">
+                                        {Math.round(userZoom * 100)}%
+                                    </span>
+                                    <button
+                                        onClick={zoomIn}
+                                        disabled={userZoom >= 3.0}
+                                        className="p-1 md:p-2 bg-gray-700 text-white rounded disabled:opacity-50"
+                                    >
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                            <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/>
+                                        </svg>
+                                    </button>
+                                </div>
+                            )}
                         </div>
                     </div>
                 </div>
                 <div className="relative flex justify-center items-center min-h-[50vh] md:min-h-[70vh]">
                     <div className="relative bg-gray-800/50 backdrop-blur-lg rounded-2xl md:rounded-3xl p-4 md:p-8 border border-gray-700/50 shadow-2xl w-full max-w-full">
-
                         <Document
                             file={pdfData}
                             onLoadSuccess={onDocumentLoadSuccess}
