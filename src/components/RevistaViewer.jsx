@@ -55,7 +55,6 @@ export default function RevistaViewer() {
     const [revistaData, setRevistaData] = useState(null);
     const [pdfData, setPdfData] = useState(null);
     const [loadingData, setLoadingData] = useState(true);
-    const [setLoadingPdf] = useState(true);
     const [error, setError] = useState(null);
     const [currentSpread, setCurrentSpread] = useState(0);
     const [numPages, setNumPages] = useState(null);
@@ -128,7 +127,6 @@ export default function RevistaViewer() {
 
                     if (!data.pdfUrl) {
                         setError("PDF-ul revistei nu este disponibil");
-                        setLoadingPdf(false);
                     }
                 } else {
                     setError(`Revista cu ID-ul "${id}" nu a fost găsită în baza de date.`);
@@ -146,7 +144,6 @@ export default function RevistaViewer() {
     useEffect(() => {
         if (revistaData && revistaData.pdfUrl && !pdfData && !error) {
             const fetchPdf = async () => {
-                setLoadingPdf(true);
                 try {
                     const response = await fetch(pdfPathUrl);
 
@@ -168,12 +165,10 @@ export default function RevistaViewer() {
 
     const onDocumentLoadSuccess = ({ numPages }) => {
         setNumPages(numPages);
-        setLoadingPdf(false);
     };
 
     const handlePdfError = (err) => {
         setError(`Eroare la randare: ${err.message}. Dacă eroarea de versiune persistă, worker-ul este blocat în cache. Revedeți instrucțiunile de instalare a versiunii 5.4.296.`);
-        setLoadingPdf(false);
     }
 
     const nextSpread = useCallback(() => {
