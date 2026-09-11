@@ -134,7 +134,7 @@ Firebase Authentication is used for secure admin access. Only verified users can
 
 ## License
 
-All rights reserved © 2025.  
+All rights reserved © 2026.  
 This project is developed and maintained by Mihai Condrici in partnership with the Gazeta CNVA management team.
 
 ---
