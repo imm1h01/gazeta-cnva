@@ -76,21 +76,25 @@ export default function Articol() {
     }, [slug]);
 
     useEffect(() => {
-        if (articol && articol.id) {
-            const articolViewsRef = ref(db, `articole/${articol.id}/views`);
+        const articolId = articol?.id;
 
-            const incrementViews = async () => {
-                try {
-                    await runTransaction(articolViewsRef, (currentViews) => {
-                        return (currentViews || 0) + 1;
-                    });
-                } catch (error) {
-                    console.error("Error incrementing views:", error);
-                }
-            };
-
-            incrementViews();
+        if (!articolId) {
+            return;
         }
+
+        const articolViewsRef = ref(db, `articole/${articolId}/views`);
+
+        const incrementViews = async () => {
+            try {
+                await runTransaction(articolViewsRef, (currentViews) => {
+                    return (currentViews || 0) + 1;
+                });
+            } catch (error) {
+                console.error("Error incrementing views:", error);
+            }
+        };
+
+        incrementViews();
     }, [articol?.id]);
 
     const getCategorie = (tags) => {

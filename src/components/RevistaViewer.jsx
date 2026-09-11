@@ -55,7 +55,7 @@ export default function RevistaViewer() {
     const [revistaData, setRevistaData] = useState(null);
     const [pdfData, setPdfData] = useState(null);
     const [loadingData, setLoadingData] = useState(true);
-    const [loadingPdf, setLoadingPdf] = useState(true);
+    const [setLoadingPdf] = useState(true);
     const [error, setError] = useState(null);
     const [currentSpread, setCurrentSpread] = useState(0);
     const [numPages, setNumPages] = useState(null);
